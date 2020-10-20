@@ -8,6 +8,7 @@
 
 #include "Mesh.h"
 #include "Shader.h"
+#include "Window.h"
 
 #define PI 3.1415927
 #define TO_RADIANS(x) ((PI*x)/180)
@@ -15,11 +16,9 @@
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
-const int WINDOW_POS_X = 100;
-const int WINDOW_POS_Y = 50;
 
-//unsigned int vertexArrayObject;
-//unsigned int  vertexBufferObject;
+const glm::vec2 WINDOW_POSITION(100, 50);
+
 unsigned int uColor;
 
 float rainbow;
@@ -65,42 +64,9 @@ void createTriangle()
 int main()
 {
 
+    Window window;
+    window.create("Opengl Project", WINDOW_WIDTH, WINDOW_HEIGHT,WINDOW_POSITION);
 
-    GLFWwindow* window;
-
-    /* Initialize GLFW */
-    if (!glfwInit())
-    {   
-        std::cout << "ERROR::FAILED_TO_INITIALIZE_GLFW" << std::endl;
-        return 0;
-    }
-
-    /*GLFW Hints*/
-    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-    
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,"Opengl Window", NULL, NULL);
-    
-    if (!window)
-    {
-        std::cout << "ERROR::FAILED_TO_CREATE_WINDOW" << std::endl;
-        glfwTerminate();
-        return 0;
-    }
-
-    /*Set Window Position*/
-    glfwSetWindowPos(window, WINDOW_POS_X, WINDOW_POS_Y);
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    //Get frame buffer size and set viewport
-    int frameBufferWidth, frameBufferHeight;
-    glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
-    glViewport(0, 0, frameBufferWidth, frameBufferHeight);
 
     /*Initialize GLEW*/
    if (glewInit() != GLEW_OK)
@@ -122,11 +88,14 @@ int main()
      model = glm::translate(model, glm::vec3(0.f, 0.f, -3.f));
      model = glm::scale(model, glm::vec3(0.6, 0.6, 0.6));
 
-     glm::mat4 projection = glm::perspective<float>(45.f, (float)frameBufferWidth / frameBufferHeight, 1.f, 100.f);
+     glm::mat4 projection;
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window.getWindow()))
     {
+     
+        projection = glm::perspective<float>(45.f, window.getViewportAspectRatio(), 1.f, 100.f);
+
         rainbow = sin(glfwGetTime());
 
         xOffset = xOffset + (dir * xTrans);
@@ -168,10 +137,9 @@ int main()
         */
 
         /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window.getWindow());
 
         
     }
-    glfwTerminate();
     return 0;
 }

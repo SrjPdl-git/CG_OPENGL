@@ -16,15 +16,7 @@ class Mesh
 		uint32_t* indices;
 
 	public:
-		Mesh()
-			:vertexArrayObject(NULL),
-			 vertexBufferObject(NULL),
-			 indexBufferObject(NULL),
-			 verticesCount(0),
-			 indicesCount(0),
-			 vertices(NULL),
-			 indices(NULL)
-		{}
+		Mesh();
 
 		void create(float* vertices, uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount);
 		void render();

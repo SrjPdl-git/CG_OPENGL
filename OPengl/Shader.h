@@ -21,10 +21,8 @@ class Shader
 		void attachAndLink(uint32_t vShaderID, uint32_t fShaderID);
 	public:
 		uint32_t create(const char* vertexShaderPath, const char* fragmentShaderPath);
-		~Shader()
-		{
-			glDeleteProgram(program);
-		}
+		Shader();
+		~Shader();
 
 
 };

@@ -1,5 +1,15 @@
 #include "Shader.h"
 
+Shader::Shader()
+	:program(NULL)
+{
+}
+
+Shader::~Shader()
+{
+	glDeleteProgram(program);
+}
+
 std::string Shader::load(const char* path,uint32_t shaderType)
 {
 	std::ifstream file(path);

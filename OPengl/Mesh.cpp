@@ -1,5 +1,15 @@
 #include "Mesh.h"
 
+Mesh::Mesh()
+	:vertexArrayObject(NULL),
+	vertexBufferObject(NULL),
+	indexBufferObject(NULL),
+	verticesCount(0),
+	indicesCount(0),
+	vertices(NULL),
+	indices(NULL)
+{}
+
 void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount)
 {
 	this->vertices = vertices;
