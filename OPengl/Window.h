@@ -26,6 +26,7 @@ class Window
 		GLFWwindow* getWindow() const;
 		float getWindowAspectRatio() const;
 		float getViewportAspectRatio() const;
+		bool isOpen() const;
 
 };
 

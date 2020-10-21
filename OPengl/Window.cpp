@@ -83,3 +83,8 @@ float Window::getViewportAspectRatio() const
 {
 	return (static_cast<float>(this->frameBufferWidth)/static_cast<float>(this->frameBufferHeight));
 }
+
+bool Window::isOpen() const
+{
+	return !glfwWindowShouldClose(this->window);
+}

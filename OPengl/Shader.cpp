@@ -1,7 +1,9 @@
 #include "Shader.h"
 
 Shader::Shader()
-	:program(NULL)
+	:program(NULL),
+	 uModel(NULL),
+	 uProjection(NULL)
 {
 }
 
@@ -82,7 +84,7 @@ void Shader::attachAndLink(uint32_t vShaderID, uint32_t fShaderID)
 	glDeleteShader(fShaderID);
 }
 
-uint32_t Shader::create(const char* vertexShaderPath, const char* fragmentShaderPath)
+void Shader::create(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
 	std::string vertexShader = load(vertexShaderPath, GL_VERTEX_SHADER);
 	std::string fragmentShader = load(fragmentShaderPath, GL_FRAGMENT_SHADER);
@@ -90,6 +92,14 @@ uint32_t Shader::create(const char* vertexShaderPath, const char* fragmentShader
 	uint32_t fShaderID = this->compile(fragmentShader.c_str(), GL_FRAGMENT_SHADER);
 	this->attachAndLink(vShaderID, fShaderID);
 	glUseProgram(program);
-	return program;
-	
+
+	//get uniforms id
+	uModel = glGetUniformLocation(program, "model");
+	uProjection = glGetUniformLocation(program, "projection");	
+}
+
+void Shader::updateUniforms(glm::mat4* modelMatrix, glm::mat4*  projectionMatrix)
+{
+	glUniformMatrix4fv(uModel, 1, GL_FALSE,glm::value_ptr(*modelMatrix));
+	glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
 }
