@@ -6,9 +6,10 @@ out vec4 color;
 
 uniform mat4 model;
 uniform mat4 projection;
+uniform mat4 view;
 
 void main()
 {
-    gl_Position=projection*model*position;
+    gl_Position=projection*view*model*position;
     color = vec4(clamp(position, 0.f, 1.f));
 }

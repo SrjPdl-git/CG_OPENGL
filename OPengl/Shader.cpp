@@ -95,11 +95,13 @@ void Shader::create(const char* vertexShaderPath, const char* fragmentShaderPath
 
 	//get uniforms id
 	uModel = glGetUniformLocation(program, "model");
-	uProjection = glGetUniformLocation(program, "projection");	
+	uProjection = glGetUniformLocation(program, "projection");
+	uView = glGetUniformLocation(program, "view");
 }
 
-void Shader::updateUniforms(glm::mat4* modelMatrix, glm::mat4*  projectionMatrix)
+void Shader::updateUniforms(glm::mat4* modelMatrix, glm::mat4*  projectionMatrix,glm::mat4* viewMatrix)
 {
 	glUniformMatrix4fv(uModel, 1, GL_FALSE,glm::value_ptr(*modelMatrix));
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
+	glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(*viewMatrix));
 }

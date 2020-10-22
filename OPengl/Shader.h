@@ -20,13 +20,14 @@ class Shader
 
 		uint32_t uModel;
 		uint32_t uProjection;
+		uint32_t uView;
 	protected:
 		std::string load(const char* path,uint32_t shaderType);
 		uint32_t compile(const char *path,uint32_t shaderType);
 		void attachAndLink(uint32_t vShaderID, uint32_t fShaderID);
 	public:
 		void create(const char* vertexShaderPath, const char* fragmentShaderPath);
-		void updateUniforms(glm::mat4 * modelMatrix,glm::mat4 *projectionMatrix);
+		void updateUniforms(glm::mat4 * modelMatrix,glm::mat4 *projectionMatrix,glm::mat4 *viewMatrix);
 		Shader();
 		~Shader();
 

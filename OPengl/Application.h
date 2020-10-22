@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Window.h"
+#include "Camera.h"
 #include<glm/ext/matrix_transform.hpp>
 
 class Application
@@ -15,14 +16,18 @@ class Application
 		Shader shader;
 		Mesh mesh;
 
+		float deltaTime;
+
 		glm::mat4 model;
 		glm::mat4 projection;
 
 		void createPyramid();
-	public:
 		void start();
-		void update();
 		Application();
+	public:
+		Application(const Application& ) = delete;
+		static Application& Get();
+		void update();
 		~Application();
 
 

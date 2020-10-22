@@ -30,7 +30,7 @@ void Window::handleResize(GLFWwindow* window, int width, int height)
 {
 	frameBufferWidth = width;
 	frameBufferHeight = height;
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, frameBufferWidth, frameBufferHeight);
 }
 
 void Window::create(const char* title,const uint32_t windowWidth, const uint32_t windowHeight, const glm::vec2 windowPosition)

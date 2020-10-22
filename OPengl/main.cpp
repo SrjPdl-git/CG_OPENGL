@@ -3,7 +3,6 @@
 
 int main()
 {
-    Application application;
-    application.update();
+    Application::Get().update();
     return 0;
 }
