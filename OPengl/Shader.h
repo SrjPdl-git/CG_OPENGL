@@ -21,6 +21,7 @@ class Shader
 		uint32_t uModel;
 		uint32_t uProjection;
 		uint32_t uView;
+		uint32_t uTextureUnit;
 	protected:
 		std::string load(const char* path,uint32_t shaderType);
 		uint32_t compile(const char *path,uint32_t shaderType);

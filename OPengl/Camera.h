@@ -1,5 +1,5 @@
 #pragma once
-#include<iostream>
+
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include "Mouse.h"
@@ -26,12 +26,7 @@ class Camera
 		Camera(GLFWwindow* window);
 
 		void update(float deltaTime);
-
 		glm::mat4 getViewMat();
 		
-
-
-
-
 };
 

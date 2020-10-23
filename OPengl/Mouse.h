@@ -15,7 +15,7 @@ class Mouse
 	public:
 		Mouse(const Mouse&) = delete;
 		static Mouse& getInstance(GLFWwindow* window);
-		glm::vec2& getChange();
+		glm::vec2 getChange();
 
 
 };

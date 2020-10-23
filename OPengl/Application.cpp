@@ -18,10 +18,11 @@ Application::~Application()
 void Application::createPyramid()
 {
     float positions[] = {
-      -1.f, -1.f,  0.f,//0
-       0.f, -1.f,  1.f,//1
-       1.f, -1.f,  0.f,//2
-       0.f,  1.f,  0.f//3
+       //Positions          //Colour        //textureCoordinate
+      -1.f, -1.f,  0.f,     1.f, 0.f, 0.f,     0.f,  0.f,     //0
+       0.f, -1.f,  1.f,     0.f, 1.f, 0.f,     0.5f, 0.f,    //1
+       1.f, -1.f,  0.f,     0.f, 0.f, 1.f,     1.f,  0.f,     //2
+       0.f,  1.f,  0.f,     1.f, 0.f, 0.f,     0.5f, 1.f      //3
     };
 
     uint32_t indices[] = {
@@ -34,7 +35,7 @@ void Application::createPyramid()
 
     shader.create("vertexShader.shader", "fragmentShader.shader");
 
-    mesh.create(positions, sizeof(positions) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t));
+    mesh.create(positions, sizeof(positions) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t),"textures/index.png");
 
 }
 
@@ -80,6 +81,8 @@ void Application::update()
         currentFrameTime = glfwGetTime();
         deltaTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
+
+        //std::cout << 1 / deltaTime << std::endl;
 
         if (glfwGetKey(window.getWindow(), GLFW_KEY_ESCAPE))
         {

@@ -11,7 +11,7 @@ Camera::Camera(GLFWwindow* window)
 	u(glm::vec3(1.f, 0.f, 0.f)),
 	v(glm::vec3(0.f, 1.f, 0.f)),
 	n(glm::vec3(0.f, 0.f, -1.f)),
-	yaw(0),
+	yaw(-90.f),
 	pitch(0),
 	moveSpeed(10.f),
 	mouse(Mouse::getInstance(window)),
@@ -30,11 +30,11 @@ void Camera::mouseInput()
 	//clamping value of pitch between -90 and 90
 	if (pitch <= -90.f)
 	{
-		pitch = -89.f;
+		pitch = -89.9f;
 	}
 	else if(pitch >= 90.f)
 	{
-		pitch = 89.f;
+		pitch = 89.9f;
 	}
 
 	n.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));

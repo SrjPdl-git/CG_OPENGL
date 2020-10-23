@@ -10,12 +10,13 @@ Mesh::Mesh()
 	indices(NULL)
 {}
 
-void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount)
+void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount,const char* texturePath)
 {
 	this->vertices = vertices;
 	this->verticesCount = verticesCount;
 	this->indicesCount = indicesCount;
 	this->indices = indices;
+	this->texture.create(texturePath);
 
 	/*Creating and Binding Vertex Array Object*/
 	glGenVertexArrays(1, &vertexArrayObject);
@@ -27,8 +28,18 @@ void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uin
 	glBufferData(GL_ARRAY_BUFFER, this->verticesCount*sizeof(float), vertices, GL_STATIC_DRAW);
 
 	/*Enable and Setup Vertex Attribute Pointer*/
+
+	//for position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+
+	//for colour
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	//for texture Coordinate
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	/*creating and binding Index Buffer Object*/
 	glGenBuffers(1, &indexBufferObject);
@@ -47,5 +58,6 @@ void Mesh::render()
 {
 	glBindVertexArray(vertexArrayObject);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+	texture.Activate();
 	glDrawElements(GL_TRIANGLES,indicesCount, GL_UNSIGNED_INT,0);
 }

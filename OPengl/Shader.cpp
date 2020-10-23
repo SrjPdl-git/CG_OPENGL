@@ -2,8 +2,10 @@
 
 Shader::Shader()
 	:program(NULL),
-	 uModel(NULL),
-	 uProjection(NULL)
+	uModel(NULL),
+	uProjection(NULL),
+	uView(NULL),
+	uTextureUnit(NULL)
 {
 }
 
@@ -97,6 +99,7 @@ void Shader::create(const char* vertexShaderPath, const char* fragmentShaderPath
 	uModel = glGetUniformLocation(program, "model");
 	uProjection = glGetUniformLocation(program, "projection");
 	uView = glGetUniformLocation(program, "view");
+	uTextureUnit = glGetUniformLocation(program, "texture0");
 }
 
 void Shader::updateUniforms(glm::mat4* modelMatrix, glm::mat4*  projectionMatrix,glm::mat4* viewMatrix)
@@ -104,4 +107,5 @@ void Shader::updateUniforms(glm::mat4* modelMatrix, glm::mat4*  projectionMatrix
 	glUniformMatrix4fv(uModel, 1, GL_FALSE,glm::value_ptr(*modelMatrix));
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
 	glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(*viewMatrix));
+	glUniform1i(uTextureUnit, GL_TEXTURE0);
 }

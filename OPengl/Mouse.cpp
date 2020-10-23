@@ -31,7 +31,7 @@ Mouse& Mouse::getInstance(GLFWwindow *window)
 	return instance;
 }
 
-glm::vec2& Mouse::getChange()
+glm::vec2 Mouse::getChange()
 {
 	glm::vec2 temp = change*sensitivity;
 	change = glm::vec2(0, 0);

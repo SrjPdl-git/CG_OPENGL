@@ -2,7 +2,7 @@
 #include<iostream>
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
-
+#include "Texture.h"
 
 class Mesh
 {
@@ -14,11 +14,12 @@ class Mesh
 		uint32_t indicesCount;
 		float* vertices;
 		uint32_t* indices;
+		Texture texture;
 
 	public:
 		Mesh();
 
-		void create(float* vertices, uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount);
+		void create(float* vertices, uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount,const char* texturePath);
 		void render();
 
 
