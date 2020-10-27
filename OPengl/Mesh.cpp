@@ -6,16 +6,21 @@ Mesh::Mesh()
 	indexBufferObject(NULL),
 	verticesCount(0),
 	indicesCount(0),
+	uModel(NULL),
+	program(NULL),
 	vertices(NULL),
 	indices(NULL)
 {}
 
-void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount,const char* texturePath)
+void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount,const char* texturePath,uint32_t shaderProgram)
 {
 	this->vertices = vertices;
 	this->verticesCount = verticesCount;
 	this->indicesCount = indicesCount;
 	this->indices = indices;
+	this->program = shaderProgram;
+
+	this->texture = Texture(program);
 	this->texture.create(texturePath);
 
 	/*Creating and Binding Vertex Array Object*/
@@ -51,13 +56,21 @@ void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uin
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	//getting uniform location
+	uModel = glGetUniformLocation(program, "model");
 	
+}
+
+void Mesh::update(glm::mat4* modelMatrix )
+{
+	glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(*modelMatrix));
 }
 
 void Mesh::render()
 {
 	glBindVertexArray(vertexArrayObject);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	texture.Activate();
+	texture.Activate(GL_TEXTURE0);
 	glDrawElements(GL_TRIANGLES,indicesCount, GL_UNSIGNED_INT,0);
 }

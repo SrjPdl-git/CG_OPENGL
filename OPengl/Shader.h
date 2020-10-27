@@ -28,7 +28,7 @@ class Shader
 		void attachAndLink(uint32_t vShaderID, uint32_t fShaderID);
 	public:
 		void create(const char* vertexShaderPath, const char* fragmentShaderPath);
-		void updateUniforms(glm::mat4 * modelMatrix,glm::mat4 *projectionMatrix,glm::mat4 *viewMatrix);
+		uint32_t getProgram() const;
 		Shader();
 		~Shader();
 

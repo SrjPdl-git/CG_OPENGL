@@ -5,19 +5,24 @@ glm::mat4 Camera::getViewMat()
 	return glm::lookAt(position, position + n, v);
 }
 
-Camera::Camera(GLFWwindow* window)
+Camera::Camera(GLFWwindow* window, uint32_t shaderProgram)
 	:window(window),
 	position(glm::vec3(0.f, 0.f, 5.f)),
 	u(glm::vec3(1.f, 0.f, 0.f)),
 	v(glm::vec3(0.f, 1.f, 0.f)),
 	n(glm::vec3(0.f, 0.f, -1.f)),
+	uView(NULL),
+	uProjection(NULL),
+	program(shaderProgram),
 	yaw(-90.f),
 	pitch(0),
 	moveSpeed(10.f),
 	mouse(Mouse::getInstance(window)),
 	keyboard(Keyboard::getInstance(window))
 {
-	
+	//getting uniform location
+	uProjection = glGetUniformLocation(program, "projection");
+	uView = glGetUniformLocation(program, "view");
 }
 
 void Camera::mouseInput()
@@ -66,8 +71,10 @@ void Camera::keyboardInput(float deltaTime)
 	}
 }
 
-void Camera::update(float deltaTime)
+void Camera::update(float deltaTime, glm::mat4* projectionMatrix)
 {
+	glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
+	glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(getViewMat()));
 	mouseInput();
 	keyboardInput(deltaTime);
 }

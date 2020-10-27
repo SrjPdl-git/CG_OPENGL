@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Window.h"
 #include "Camera.h"
+#include "Light.h"
 #include<glm/ext/matrix_transform.hpp>
 
 class Application

@@ -3,12 +3,23 @@
 
 Texture::Texture()
 	:data(NULL),
+	width(NULL),
+	height(NULL),
+	channels(NULL),
+	texture(NULL),
+	program(NULL)
+{
+}
+
+Texture::Texture(uint32_t shaderProgram)
+	:data(NULL),
 	 width(NULL),
 	 height(NULL),
 	 channels(NULL),
-	 texture(NULL)
+	 texture(NULL),
+	 program(shaderProgram)
 {
-
+	uTextureUnit = glGetUniformLocation(program, "texture0");
 }
 
 Texture::~Texture()
@@ -30,10 +41,13 @@ void Texture::load(const char* path)
 
 
 
-void Texture::create(const char* path)
+void Texture::create(const char* path,uint32_t textureUnit)
 {
 	load(path);
+	uint32_t glformat = (channels == 4) ? GL_RGBA : GL_RGB;
+
 	glGenTextures(1, &texture);
+	glActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -41,16 +55,21 @@ void Texture::create(const char* path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,0,GL_RGB,GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, glformat, width, height, 0, glformat,GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(data);
+
+	
 }
 
-void Texture::Activate()
+void Texture::Activate(uint32_t textureUnit)
 {
-	glActiveTexture(GL_TEXTURE0);
+	//Setting uniform Sampler2d
+	glUniform1i(uTextureUnit, textureUnit);
+
+	glActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	
 }

@@ -17,7 +17,7 @@ Application::~Application()
 
 void Application::createPyramid()
 {
-    float positions[] = {
+    float vertices[] = {
        //Positions          //Colour        //textureCoordinate
       -1.f, -1.f,  0.f,     1.f, 0.f, 0.f,     0.f,  0.f,     //0
        0.f, -1.f,  1.f,     0.f, 1.f, 0.f,     0.5f, 0.f,    //1
@@ -33,9 +33,9 @@ void Application::createPyramid()
     };
 
 
-    shader.create("vertexShader.shader", "fragmentShader.shader");
+    shader.create("vertexShader.glsl", "fragmentShader.glsl");
 
-    mesh.create(positions, sizeof(positions) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t),"textures/index.png");
+    mesh.create(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t),"textures/index.png",shader.getProgram());
 
 }
 
@@ -75,7 +75,9 @@ void Application::update()
 
     float currAngle = 0.f;
    
-    Camera camera(window.getWindow());
+    Camera camera(window.getWindow(),shader.getProgram());
+    Light light(shader.getProgram());
+
     while (window.isOpen())
     {
         currentFrameTime = glfwGetTime();
@@ -102,7 +104,7 @@ void Application::update()
         currAngle = currAngle > 360 ? 0 : 1.f;
 
 
-        //model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
+        model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
         //model = glm::translate(model, glm::vec3(dir * xTrans, 0.f, 0.f));
 
         /* Poll for and process events */
@@ -114,9 +116,14 @@ void Application::update()
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        camera.update(deltaTime);
-        //Update uniforms before rendering
-        shader.updateUniforms(&model, &projection,&camera.getViewMat());
+        //updating camera
+        camera.update(deltaTime,&projection);
+
+        //updating lights
+        light.update();
+
+        //Update and render mesh
+        mesh.update(&model);
         mesh.render();
 
         /* Swap front and back buffers */

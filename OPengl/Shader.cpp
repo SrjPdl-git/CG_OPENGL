@@ -94,18 +94,9 @@ void Shader::create(const char* vertexShaderPath, const char* fragmentShaderPath
 	uint32_t fShaderID = this->compile(fragmentShader.c_str(), GL_FRAGMENT_SHADER);
 	this->attachAndLink(vShaderID, fShaderID);
 	glUseProgram(program);
-
-	//get uniforms id
-	uModel = glGetUniformLocation(program, "model");
-	uProjection = glGetUniformLocation(program, "projection");
-	uView = glGetUniformLocation(program, "view");
-	uTextureUnit = glGetUniformLocation(program, "texture0");
 }
 
-void Shader::updateUniforms(glm::mat4* modelMatrix, glm::mat4*  projectionMatrix,glm::mat4* viewMatrix)
+uint32_t Shader::getProgram() const
 {
-	glUniformMatrix4fv(uModel, 1, GL_FALSE,glm::value_ptr(*modelMatrix));
-	glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
-	glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(*viewMatrix));
-	glUniform1i(uTextureUnit, GL_TEXTURE0);
+	return program;
 }
