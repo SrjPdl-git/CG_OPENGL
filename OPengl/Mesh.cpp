@@ -38,7 +38,7 @@ void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uin
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
 	glEnableVertexAttribArray(0);
 
-	//for colour
+	//for normal
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 

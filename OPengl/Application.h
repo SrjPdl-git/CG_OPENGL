@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "Camera.h"
 #include "Light.h"
+#include "Helper.h"
 #include<glm/ext/matrix_transform.hpp>
 
 class Application
@@ -23,7 +24,7 @@ class Application
 		glm::mat4 projection;
 
 		void createPyramid();
-		void start();
+		void setup();
 		Application();
 	public:
 		Application(const Application& ) = delete;

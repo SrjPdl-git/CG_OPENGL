@@ -8,7 +8,7 @@ Application::Application()
      projection(NULL),
      deltaTime(NULL)
 {
-	start();
+	setup();
 }
 
 Application::~Application()
@@ -18,11 +18,11 @@ Application::~Application()
 void Application::createPyramid()
 {
     float vertices[] = {
-       //Positions          //Colour        //textureCoordinate
-      -1.f, -1.f,  0.f,     1.f, 0.f, 0.f,     0.f,  0.f,     //0
-       0.f, -1.f,  1.f,     0.f, 1.f, 0.f,     0.5f, 0.f,    //1
-       1.f, -1.f,  0.f,     0.f, 0.f, 1.f,     1.f,  0.f,     //2
-       0.f,  1.f,  0.f,     1.f, 0.f, 0.f,     0.5f, 1.f      //3
+       //Positions          //Normals          //textureCoordinates
+      -1.f, -1.f,  0.f,     0.f, 0.f, 0.f,     0.f,  0.f,     //0
+       0.f, -1.f,  1.f,     0.f, 0.f, 0.f,     0.5f, 0.f,    //1
+       1.f, -1.f,  0.f,     0.f, 0.f, 0.f,     1.f,  0.f,     //2
+       0.f,  1.f,  0.f,     0.f, 0.f, 0.f,     0.5f, 1.f      //3
     };
 
     uint32_t indices[] = {
@@ -35,11 +35,13 @@ void Application::createPyramid()
 
     shader.create("vertexShader.glsl", "fragmentShader.glsl");
 
+    Helper::calculateVertexNormal(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t), 8, 3);
+
     mesh.create(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t),"textures/index.png",shader.getProgram());
 
 }
 
-void Application::start()
+void Application::setup()
 {    
     window.create("Opengl Project", WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_POSITION);
 
@@ -104,7 +106,7 @@ void Application::update()
         currAngle = currAngle > 360 ? 0 : 1.f;
 
 
-        model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
+        //model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
         //model = glm::translate(model, glm::vec3(dir * xTrans, 0.f, 0.f));
 
         /* Poll for and process events */
@@ -120,7 +122,7 @@ void Application::update()
         camera.update(deltaTime,&projection);
 
         //updating lights
-        light.update();
+        light.update(glm::vec3(1.f, 1.f, 1.f),0.6f, 1.f, glm::vec3(-1.f, -1.f, 0.f));
 
         //Update and render mesh
         mesh.update(&model);
