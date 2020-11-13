@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "Camera.h"
 #include "Light.h"
+#include "Material.h"
 #include "Helper.h"
 #include<glm/ext/matrix_transform.hpp>
 

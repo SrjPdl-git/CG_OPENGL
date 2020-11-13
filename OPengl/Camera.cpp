@@ -11,8 +11,6 @@ Camera::Camera(GLFWwindow* window, uint32_t shaderProgram)
 	u(glm::vec3(1.f, 0.f, 0.f)),
 	v(glm::vec3(0.f, 1.f, 0.f)),
 	n(glm::vec3(0.f, 0.f, -1.f)),
-	uView(NULL),
-	uProjection(NULL),
 	program(shaderProgram),
 	yaw(-90.f),
 	pitch(0),
@@ -23,6 +21,7 @@ Camera::Camera(GLFWwindow* window, uint32_t shaderProgram)
 	//getting uniform location
 	uProjection = glGetUniformLocation(program, "projection");
 	uView = glGetUniformLocation(program, "view");
+	uPosition = glGetUniformLocation(program, "cameraPosition");
 }
 
 void Camera::mouseInput()
@@ -55,26 +54,29 @@ void Camera::keyboardInput(float deltaTime)
 {
 	if (keyboard.isKeyDown(GLFW_KEY_W))
 	{
-		position += n * moveSpeed*deltaTime;
+		position += n * moveSpeed * deltaTime;
 	}
 	else if (keyboard.isKeyDown(GLFW_KEY_S))
 	{
-		position -= n * moveSpeed*deltaTime;
+		position -= n * moveSpeed * deltaTime;
 	}
 	else if (keyboard.isKeyDown(GLFW_KEY_A))
 	{
-		position -= u * moveSpeed*deltaTime;
+		position -= u * moveSpeed * deltaTime;
 	}
 	else if (keyboard.isKeyDown(GLFW_KEY_D))
 	{
-		position += u * moveSpeed*deltaTime;
+		position += u * moveSpeed * deltaTime;
 	}
 }
 
 void Camera::update(float deltaTime, glm::mat4* projectionMatrix)
 {
-	glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
-	glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(getViewMat()));
+	
 	mouseInput();
 	keyboardInput(deltaTime);
+
+	glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
+	glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(getViewMat()));
+	glUniform3fv(uPosition, 1, glm::value_ptr(this->position));
 }

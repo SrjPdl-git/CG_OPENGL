@@ -79,6 +79,7 @@ void Application::update()
    
     Camera camera(window.getWindow(),shader.getProgram());
     Light light(shader.getProgram());
+    Material material(shader.getProgram());
 
     while (window.isOpen())
     {
@@ -121,8 +122,11 @@ void Application::update()
         //updating camera
         camera.update(deltaTime,&projection);
 
+        //updating material
+        material.update(1.f, 64);
+
         //updating lights
-        light.update(glm::vec3(1.f, 1.f, 1.f),0.6f, 1.f, glm::vec3(-1.f, -1.f, 0.f));
+        light.update(glm::vec3(1.f, 1.f, 1.f),0.3f, 0.4f, glm::vec3(-1.f, -1.f, 0.f));
 
         //Update and render mesh
         mesh.update(&model);

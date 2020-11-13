@@ -17,6 +17,7 @@ class Camera
 		glm::vec3 n;
 		uint32_t uView;
 		uint32_t uProjection;
+		uint32_t uPosition;
 		uint32_t program;
 		float yaw;
 		float pitch;

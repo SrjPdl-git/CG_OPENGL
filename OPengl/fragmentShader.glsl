@@ -4,27 +4,67 @@ out vec4 colour;
 
 in vec3 normal;
 in vec2 texCoord;
+in vec3 fragmentCoord;
 
+uniform vec3 cameraPosition;
 uniform sampler2D texture0;
 
 struct DirectionalLight
 {
 	vec3 colour;
 	vec3 direction;
-	float ambientStrength;
-	float diffuseStrength;
+	float ambientReflectivity;
+	float diffuseReflectivity;
 
 };
 
+struct Material
+{
+	float specularReflectivity;
+	float specularShine;
+};
+
 uniform DirectionalLight directionalLight;
+uniform Material material;
 
 void main()
 {
-	vec4 ambient = vec4(directionalLight.colour, 1.f) * directionalLight.ambientStrength;
+	vec4 ambient = vec4(directionalLight.ambientReflectivity * directionalLight.colour, 1.f);
 
-	vec4 diffuse = vec4(directionalLight.colour, 1.f)
-				   * directionalLight.diffuseStrength
-				   * max(dot(normalize(normal),normalize(directionalLight.direction)),0);
+	/*Diffuse Lighting */
+	//Angle between normal vector and light Direction vector
+	float diffuseCosineAngle = max(dot(normalize(normal),normalize(directionalLight.direction)), 0.f);
 
-	colour = texture(texture0, texCoord) * (ambient + diffuse);
+	vec4 diffuse = vec4(
+					 directionalLight.diffuseReflectivity
+				   * directionalLight.colour
+				   * diffuseCosineAngle,
+				     1.f);
+
+	
+	/*Specular lighting*/
+	vec4 specular = vec4(0.f, 0.f, 0.f, 1.f);
+	if(bool(diffuseCosineAngle))
+	{
+		//unit vector from fragment to viewer
+		vec3 V = normalize(fragmentCoord - cameraPosition);
+
+		//unit reflection vector
+		vec3 R = normalize(reflect(normalize(-directionalLight.direction), normalize(normal)));
+
+		//Angle between V and R vector
+		float specularCosineAngle = max(dot(V, R), 0.f);
+
+		if(bool(specularCosineAngle))
+		{
+			specular = vec4(
+						material.specularReflectivity
+					  * pow(specularCosineAngle, material.specularShine)
+					  * directionalLight.colour,
+					    1.f);
+		}
+	}
+
+
+	colour = texture(texture0, texCoord) * (ambient + diffuse + specular);
 }
