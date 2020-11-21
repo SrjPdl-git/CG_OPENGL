@@ -19,7 +19,8 @@ class Model
 	private:
 		uint32_t program;
 		std::vector<Mesh*> meshes;
-		std::vector<Texture*> textures;
+		std::vector<Texture*> diffuseTexture;
+		std::vector<Texture*> specularTexture;
 		std::vector<uint32_t> textureIndex;
 
 		void handleNode(aiNode* node, const aiScene* scene);

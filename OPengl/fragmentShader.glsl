@@ -7,7 +7,7 @@ in vec2 texCoord;
 in vec3 fragmentCoord;
 
 uniform vec3 cameraPosition;
-uniform sampler2D texture0;
+//uniform sampler2D texture0;
 
 struct DirectionalLight
 {
@@ -20,6 +20,8 @@ struct DirectionalLight
 
 struct Material
 {
+	sampler2D diffuse;
+	sampler2D specular;
 	float specularReflectivity;
 	float specularShine;
 };
@@ -66,5 +68,6 @@ void main()
 	}
 
 
-	colour = texture(texture0, texCoord) * (ambient + diffuse + specular);
+	colour = texture(material.diffuse, texCoord) * (ambient + diffuse)
+			+texture(material.specular,texCoord)*specular;
 }

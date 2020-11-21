@@ -25,7 +25,12 @@ void Model::render(glm::mat4* modelMatrix)
 {
 	for (uint32_t i = 0; i < meshes.size(); i++)
 	{
-		textures[textureIndex[i]]->Activate(GL_TEXTURE0);
+		if(diffuseTexture.size() > 0)
+		diffuseTexture[textureIndex[i]]->Activate();
+
+		if(specularTexture.size() > 0)
+		specularTexture[textureIndex[i]]->Activate();
+
 		meshes[i]->update(modelMatrix);
 		meshes[i]->render();
 	}
@@ -57,15 +62,11 @@ void Model::handleMesh(aiMesh* mesh, const aiScene* scene)
 		vertices.push_back(mesh->mVertices[i].y);
 		vertices.push_back(mesh->mVertices[i].z);
 
-		//vertices.push_back(mesh->mNormals[i].x);
-		//vertices.push_back(mesh->mNormals[i].y);
-		//vertices.push_back(mesh->mNormals[i].z);
-
 		if (mesh->HasNormals())
 		{
-			vertices.push_back(mesh->mNormals[i].x);
-			vertices.push_back(mesh->mNormals[i].y);
-			vertices.push_back(mesh->mNormals[i].z);
+			vertices.push_back(-mesh->mNormals[i].x);
+			vertices.push_back(-mesh->mNormals[i].y);
+			vertices.push_back(-mesh->mNormals[i].z);
 		}
 		else
 		{
@@ -83,14 +84,6 @@ void Model::handleMesh(aiMesh* mesh, const aiScene* scene)
 
 	for (uint32_t i = 0; i < mesh->mNumFaces; i++)
 	{
-		/*aiFace face = mesh->mFaces[i];
-		for (uint32_t j = 0; j < face.mNumIndices; j++)
-		{
-			indices.push_back(face.mIndices[j]);
-
-		}
-		*/
-
 		indices.push_back(mesh->mFaces[i].mIndices[0]);
 		indices.push_back(mesh->mFaces[i].mIndices[1]);
 		indices.push_back(mesh->mFaces[i].mIndices[2]);
@@ -112,14 +105,17 @@ void Model::handleMesh(aiMesh* mesh, const aiScene* scene)
 
 void Model::handleTexture(const aiScene* scene)
 {
-	textures.resize(scene->mNumMaterials);
+	diffuseTexture.resize(scene->mNumMaterials);
+	specularTexture.resize(scene->mNumMaterials);
 
 	for (uint32_t i = 0; i < scene->mNumMaterials; i++)
 	{
-		textures[i] = nullptr;
+		diffuseTexture[i] = nullptr;
+		specularTexture[i] = nullptr;
 
 		aiMaterial* material= scene->mMaterials[i];
 
+		//getting diffuse texture
 		if (material->GetTextureCount(aiTextureType_DIFFUSE))
 		{
 			aiString filePath;
@@ -128,14 +124,31 @@ void Model::handleTexture(const aiScene* scene)
 			std::string relativePath = std::string("textures/") +
 									   std::string(filePath.data).substr(std::string(filePath.data).rfind("\\")+1);
 
-			textures[i] = new Texture(this->program, relativePath.c_str());
-			//textures[i] = nTexture;
+			diffuseTexture[i] = new Texture(this->program, relativePath.c_str(), 0);
 		}
 		
-		if(!textures[i])
+
+
+		//getting specular texture
+		if (material->GetTextureCount(aiTextureType_SPECULAR))
 		{
-			textures[i] = new Texture(this->program, "textures/index.png");
-			//textures[i] = nTexture;
+			aiString filePath;
+			material->GetTexture(aiTextureType_SPECULAR, 0, &filePath);
+
+			std::string relativePath = std::string("textures/") +
+				std::string(filePath.data).substr(std::string(filePath.data).rfind("\\") + 1);
+
+			specularTexture[i] = new Texture(this->program, relativePath.c_str(), 1);
 		}
+		
+		if(!diffuseTexture[i])
+		{
+			diffuseTexture[i] = new Texture(this->program, "textures/white.png",0);
+		}
+		if (!specularTexture[i])
+		{
+			specularTexture[i] = new Texture(this->program, "textures/black.png", 1);
+		}
+		
 	}
 }

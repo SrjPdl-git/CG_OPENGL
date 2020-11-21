@@ -17,9 +17,11 @@ Texture::Texture(uint32_t shaderProgram, const char* path, uint32_t textureUnit)
 	 height(NULL),
 	 channels(NULL),
 	 texture(NULL),
-	 program(shaderProgram)
+	 program(shaderProgram),
+	 textureUnit(textureUnit)
 {
-	uTextureUnit = glGetUniformLocation(program, "texture0");
+	uDiffuse = glGetUniformLocation(program, "material.diffuse");
+	uSpecular = glGetUniformLocation(program, "material.specular");
 	create(path, textureUnit);
 }
 
@@ -49,7 +51,7 @@ void Texture::create(const char* path,uint32_t textureUnit)
 	uint32_t glformat = (channels == 4) ? GL_RGBA : GL_RGB;
 
 	glGenTextures(1, &texture);
-	glActiveTexture(textureUnit);
+	glActiveTexture(GL_TEXTURE0 + textureUnit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -66,12 +68,28 @@ void Texture::create(const char* path,uint32_t textureUnit)
 	
 }
 
-void Texture::Activate(uint32_t textureUnit)
+void Texture::Activate()
 {
 	//Setting uniform Sampler2d
-	glUniform1i(uTextureUnit, textureUnit);
+	uint32_t CurrTexture;
+	if ((GL_TEXTURE0 + textureUnit) == GL_TEXTURE0)
+	{
+		CurrTexture = uDiffuse;
+	}
+	else if ((GL_TEXTURE0 + textureUnit) == GL_TEXTURE1)
+	{
+		CurrTexture = uSpecular;
+	}
+	else
+	{
+		std::cout << "ERROR::INVALID_TEXTURE_UNIT" << std::endl;
+		return;
+	}
 
-	glActiveTexture(textureUnit);
+	glActiveTexture(GL_TEXTURE0 + textureUnit);
+	glEnable(GL_TEXTURE_2D);
+	glUniform1i(CurrTexture, textureUnit);
+
 	glBindTexture(GL_TEXTURE_2D, texture);
 	
 }

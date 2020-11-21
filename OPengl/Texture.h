@@ -10,17 +10,19 @@ class Texture
 		int32_t height;
 		int32_t channels;
 		uint32_t texture;
-		uint32_t uTextureUnit;
+		uint32_t uDiffuse;
+		uint32_t uSpecular;
 		uint32_t program;
+		uint32_t textureUnit;
 
 		void load(const char* path);
 		void create(const char* path, uint32_t textureUnit = GL_TEXTURE0);
 	public:
 		Texture();
-		Texture(uint32_t shaderProgram, const char* path, uint32_t textureUnit = GL_TEXTURE0);
+		Texture(uint32_t shaderProgram, const char* path, uint32_t textureUnit);
 		//void create(const char* path, uint32_t textureUnit = GL_TEXTURE0);
 		~Texture();
-		void Activate(uint32_t textureSlot);
+		void Activate();
 
 };
 

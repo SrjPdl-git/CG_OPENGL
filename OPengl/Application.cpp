@@ -97,10 +97,12 @@ void Application::update()
     Light light(shader.getProgram());
     Material material(shader.getProgram());
 
-    Texture text = Texture(shader.getProgram(), "textures/index.png");
+    Texture dText = Texture(shader.getProgram(), "textures/index.png",0);
+    Texture sText = Texture(shader.getProgram(), "textures/index.png", 1);
+   
 
     Model test;
-    test.load("models/gun/backpack.obj", shader.getProgram());
+    test.load("models/gun/Only_Spider_with_Animations_Export.obj", shader.getProgram());
 
 
     glm::mat4 mod = glm::mat4(1.f);
@@ -127,10 +129,10 @@ void Application::update()
             dir *= -1;
         }
 
-        currAngle = currAngle > 360 ? 0 : 1.f;
+        
 
 
-        //model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
+        model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
         //model = glm::translate(model, glm::vec3(dir * xTrans, 0.f, 0.f));
 
         /* Poll for and process events */
@@ -150,19 +152,25 @@ void Application::update()
         
 
         //updating lights
-        light.update(glm::vec3(1.f, 1.f, 1.f),0.3f, 0.4f, glm::vec3(-1.f, -3.f, 0.f));
+        light.update(glm::vec3(1.f, 1.f, 1.f),0.2, 0.3f, glm::vec3(-1.f, -3.f, 0.f));
 
         //Update and render mesh
-        text.Activate(GL_TEXTURE0);
+        dText.Activate();
+        sText.Activate();
         material.update(1.f, 64);
         mesh.update(&model);
         mesh.render();
 
         glm::mat4 model1 = glm::mat4(1.f);
-        model1 = glm::translate(model1, glm::vec3(1.f, 2.f, 1.f));
+        
+        currAngle = currAngle > 360 ? 0 : 1.f;
+        //model1 = glm::rotate(model1, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
+        model1 = glm::scale(model1, glm::vec3(0.1f, 0.1f, 0.1f));
+        
         test.render(&model1);
 
-        text.Activate(GL_TEXTURE0);
+        dText.Activate();
+        sText.Activate();
         m1.update(&mod);
         m1.render();
 
