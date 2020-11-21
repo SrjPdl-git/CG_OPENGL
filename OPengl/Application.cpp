@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "assimp/Importer.hpp"
 
 Application::Application()
 	:WINDOW_WIDTH(800),
@@ -32,13 +33,28 @@ void Application::createPyramid()
         0,1,2
     };
 
+    float floor[] = {
+        //Positions          //Normals          //textureCoordinates
+       -10.f, -1.1f, -10.f,     0.f, -1.f, 0.f,     0.f,  0.f,     //0
+       -10.f, -1.1f,  10.f,     0.f, -1.f, 0.f,     0.f,  1.f,    //1
+        10.f, -1.1f, -10.f,     0.f, -1.f, 0.f,     1.f,  0.f,     //2
+        10.f, -1.1f,  10.f,     0.f, -1.f, 0.f,     1.f, 1.f      //3
+
+    };
+
+    uint32_t floorIndex[] = {
+        0,1,2,
+        1,2,3
+    };
 
     shader.create("vertexShader.glsl", "fragmentShader.glsl");
 
     Helper::calculateVertexNormal(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t), 8, 3);
 
-    mesh.create(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t),"textures/index.png",shader.getProgram());
+    mesh.create(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t),shader.getProgram());
 
+    
+    m1.create(floor, sizeof(floor) / sizeof(float), floorIndex, sizeof(floorIndex) / sizeof(uint32_t), shader.getProgram());
 }
 
 void Application::setup()
@@ -81,6 +97,13 @@ void Application::update()
     Light light(shader.getProgram());
     Material material(shader.getProgram());
 
+    Texture text = Texture(shader.getProgram(), "textures/index.png");
+
+    Model test;
+    test.load("models/gun/backpack.obj", shader.getProgram());
+
+
+    glm::mat4 mod = glm::mat4(1.f);
     while (window.isOpen())
     {
         currentFrameTime = glfwGetTime();
@@ -116,6 +139,7 @@ void Application::update()
 
 
         /* Render here */
+        
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -123,14 +147,24 @@ void Application::update()
         camera.update(deltaTime,&projection);
 
         //updating material
-        material.update(1.f, 64);
+        
 
         //updating lights
-        light.update(glm::vec3(1.f, 1.f, 1.f),0.3f, 0.4f, glm::vec3(-1.f, -1.f, 0.f));
+        light.update(glm::vec3(1.f, 1.f, 1.f),0.3f, 0.4f, glm::vec3(-1.f, -3.f, 0.f));
 
         //Update and render mesh
+        text.Activate(GL_TEXTURE0);
+        material.update(1.f, 64);
         mesh.update(&model);
         mesh.render();
+
+        glm::mat4 model1 = glm::mat4(1.f);
+        model1 = glm::translate(model1, glm::vec3(1.f, 2.f, 1.f));
+        test.render(&model1);
+
+        text.Activate(GL_TEXTURE0);
+        m1.update(&mod);
+        m1.render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window.getWindow());

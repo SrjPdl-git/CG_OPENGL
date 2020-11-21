@@ -12,7 +12,7 @@ Mesh::Mesh()
 	indices(NULL)
 {}
 
-void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount,const char* texturePath,uint32_t shaderProgram)
+void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uint32_t indicesCount,uint32_t shaderProgram)
 {
 	this->vertices = vertices;
 	this->verticesCount = verticesCount;
@@ -20,8 +20,9 @@ void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uin
 	this->indices = indices;
 	this->program = shaderProgram;
 
-	this->texture = Texture(program);
-	this->texture.create(texturePath);
+	//this->texture = Texture(program);
+	//this->texture = Texture(program, texturePath);
+	//this->texture.create(texturePath);
 
 	/*Creating and Binding Vertex Array Object*/
 	glGenVertexArrays(1, &vertexArrayObject);
@@ -49,7 +50,7 @@ void Mesh::create(float* vertices,uint32_t verticesCount, uint32_t* indices, uin
 	/*creating and binding Index Buffer Object*/
 	glGenBuffers(1, &indexBufferObject);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount*sizeof(uint32_t), indices, GL_STATIC_DRAW );
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount*sizeof(uint32_t), indices, GL_STATIC_DRAW);
 
 
 	/*unbinding VAO,VBO, and IBO*/
@@ -71,6 +72,6 @@ void Mesh::render()
 {
 	glBindVertexArray(vertexArrayObject);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	texture.Activate(GL_TEXTURE0);
+	//texture.Activate(GL_TEXTURE0);
 	glDrawElements(GL_TRIANGLES,indicesCount, GL_UNSIGNED_INT,0);
 }

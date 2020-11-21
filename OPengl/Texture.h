@@ -14,11 +14,12 @@ class Texture
 		uint32_t program;
 
 		void load(const char* path);
+		void create(const char* path, uint32_t textureUnit = GL_TEXTURE0);
 	public:
 		Texture();
-		Texture(uint32_t shaderProgram);
+		Texture(uint32_t shaderProgram, const char* path, uint32_t textureUnit = GL_TEXTURE0);
+		//void create(const char* path, uint32_t textureUnit = GL_TEXTURE0);
 		~Texture();
-		void create(const char* path, uint32_t textureUnit=GL_TEXTURE0);
 		void Activate(uint32_t textureSlot);
 
 };

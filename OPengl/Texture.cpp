@@ -11,7 +11,7 @@ Texture::Texture()
 {
 }
 
-Texture::Texture(uint32_t shaderProgram)
+Texture::Texture(uint32_t shaderProgram, const char* path, uint32_t textureUnit)
 	:data(NULL),
 	 width(NULL),
 	 height(NULL),
@@ -20,7 +20,9 @@ Texture::Texture(uint32_t shaderProgram)
 	 program(shaderProgram)
 {
 	uTextureUnit = glGetUniformLocation(program, "texture0");
+	create(path, textureUnit);
 }
+
 
 Texture::~Texture()
 {

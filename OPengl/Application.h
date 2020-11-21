@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "Material.h"
 #include "Helper.h"
+#include "Model.h"
 #include<glm/ext/matrix_transform.hpp>
 
 class Application
@@ -18,6 +19,7 @@ class Application
 		Window window;
 		Shader shader;
 		Mesh mesh;
+		Mesh m1;
 
 		float deltaTime;
 
