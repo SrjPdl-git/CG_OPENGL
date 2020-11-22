@@ -13,8 +13,6 @@ struct DirectionalLight
 {
 	vec3 colour;
 	vec3 direction;
-	float ambientReflectivity;
-	float diffuseReflectivity;
 
 };
 
@@ -22,8 +20,11 @@ struct Material
 {
 	sampler2D diffuse;
 	sampler2D specular;
+
 	float specularReflectivity;
 	float specularShine;
+	float ambientReflectivity;
+	float diffuseReflectivity;
 };
 
 uniform DirectionalLight directionalLight;
@@ -31,14 +32,14 @@ uniform Material material;
 
 void main()
 {
-	vec4 ambient = vec4(directionalLight.ambientReflectivity * directionalLight.colour, 1.f);
+	vec4 ambient = vec4(material.ambientReflectivity * directionalLight.colour, 1.f);
 
 	/*Diffuse Lighting */
 	//Angle between normal vector and light Direction vector
 	float diffuseCosineAngle = max(dot(normalize(normal),normalize(directionalLight.direction)), 0.f);
 
 	vec4 diffuse = vec4(
-					 directionalLight.diffuseReflectivity
+					 material.diffuseReflectivity
 				   * directionalLight.colour
 				   * diffuseCosineAngle,
 				     1.f);

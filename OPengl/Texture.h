@@ -14,6 +14,7 @@ class Texture
 		uint32_t uSpecular;
 		uint32_t program;
 		uint32_t textureUnit;
+		std::string path;
 
 		void load(const char* path);
 		void create(const char* path, uint32_t textureUnit = GL_TEXTURE0);

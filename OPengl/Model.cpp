@@ -18,18 +18,16 @@ void Model::load(const char* filePath, uint32_t program)
 	}
 	handleNode(scene->mRootNode, scene);
 
-	handleTexture(scene);
+	handleTextMat(scene);
 }
 
 void Model::render(glm::mat4* modelMatrix)
 {
 	for (uint32_t i = 0; i < meshes.size(); i++)
 	{
-		if(diffuseTexture.size() > 0)
 		diffuseTexture[textureIndex[i]]->Activate();
-
-		if(specularTexture.size() > 0)
 		specularTexture[textureIndex[i]]->Activate();
+		materials[textureIndex[i]]->update();
 
 		meshes[i]->update(modelMatrix);
 		meshes[i]->render();
@@ -103,7 +101,7 @@ void Model::handleMesh(aiMesh* mesh, const aiScene* scene)
 
 }
 
-void Model::handleTexture(const aiScene* scene)
+void Model::handleTextMat(const aiScene* scene)
 {
 	diffuseTexture.resize(scene->mNumMaterials);
 	specularTexture.resize(scene->mNumMaterials);
@@ -114,6 +112,19 @@ void Model::handleTexture(const aiScene* scene)
 		specularTexture[i] = nullptr;
 
 		aiMaterial* material= scene->mMaterials[i];
+
+		//Getting material props
+		aiColor3D ambientReflectivity;
+		aiColor3D diffuseReflectivity;
+		aiColor3D specularReflectivity;
+		float specularShine;
+
+		material->Get(AI_MATKEY_COLOR_AMBIENT, ambientReflectivity);
+		material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseReflectivity);
+		material->Get(AI_MATKEY_COLOR_SPECULAR, specularReflectivity);
+		material->Get(AI_MATKEY_SHININESS, specularShine);
+		Material* nMaterial = new Material(program,ambientReflectivity.r, diffuseReflectivity.r, specularReflectivity.r, specularShine);
+		materials.push_back(nMaterial);
 
 		//getting diffuse texture
 		if (material->GetTextureCount(aiTextureType_DIFFUSE))

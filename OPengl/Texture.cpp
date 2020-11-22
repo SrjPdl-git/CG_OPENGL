@@ -22,6 +22,7 @@ Texture::Texture(uint32_t shaderProgram, const char* path, uint32_t textureUnit)
 {
 	uDiffuse = glGetUniformLocation(program, "material.diffuse");
 	uSpecular = glGetUniformLocation(program, "material.specular");
+	this->path = path;
 	create(path, textureUnit);
 }
 

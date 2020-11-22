@@ -70,6 +70,10 @@ void Application::setup()
     }
     glewExperimental = GL_TRUE;
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+    glBlendEquation(GL_ADD);
 
     //Setting buffer swap interval
     glfwSwapInterval(1);
@@ -95,14 +99,15 @@ void Application::update()
    
     Camera camera(window.getWindow(),shader.getProgram());
     Light light(shader.getProgram());
-    Material material(shader.getProgram());
+    Material dmaterial(shader.getProgram(), 0.1f, 0.3f, 1.f, 64);
+    Material smaterial(shader.getProgram(), 0.1f, 0.6f, 1.f, 256);
 
     Texture dText = Texture(shader.getProgram(), "textures/index.png",0);
     Texture sText = Texture(shader.getProgram(), "textures/index.png", 1);
    
 
     Model test;
-    test.load("models/gun/Only_Spider_with_Animations_Export.obj", shader.getProgram());
+    test.load("models/gun/wooden watch tower2.obj", shader.getProgram());
 
 
     glm::mat4 mod = glm::mat4(1.f);
@@ -132,7 +137,7 @@ void Application::update()
         
 
 
-        model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
+        //model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
         //model = glm::translate(model, glm::vec3(dir * xTrans, 0.f, 0.f));
 
         /* Poll for and process events */
@@ -142,7 +147,7 @@ void Application::update()
 
         /* Render here */
         
-        glClearColor(0.f, 0.f, 0.f, 1.f);
+        glClearColor(1.f, 1.f, 1.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         //updating camera
@@ -152,12 +157,12 @@ void Application::update()
         
 
         //updating lights
-        light.update(glm::vec3(1.f, 1.f, 1.f),0.2, 0.3f, glm::vec3(-1.f, -3.f, 0.f));
+        light.update(glm::vec3(1.f, 1.f, 1.f), glm::vec3(-1.f, -3.f, 0.f));
 
         //Update and render mesh
         dText.Activate();
-        sText.Activate();
-        material.update(1.f, 64);
+        //sText.Activate();
+        smaterial.update();
         mesh.update(&model);
         mesh.render();
 
@@ -165,10 +170,11 @@ void Application::update()
         
         currAngle = currAngle > 360 ? 0 : 1.f;
         //model1 = glm::rotate(model1, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
-        model1 = glm::scale(model1, glm::vec3(0.1f, 0.1f, 0.1f));
+        model1 = glm::translate(model1, glm::vec3(0.f, -1.5f, 0.f));
         
         test.render(&model1);
 
+        dmaterial.update();
         dText.Activate();
         sText.Activate();
         m1.update(&mod);
