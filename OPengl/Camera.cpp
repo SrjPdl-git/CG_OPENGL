@@ -7,10 +7,10 @@ glm::mat4 Camera::getViewMat()
 
 Camera::Camera(GLFWwindow* window, uint32_t shaderProgram)
 	:window(window),
-	position(glm::vec3(0.f, 0.f, 5.f)),
+	position(glm::vec3(10.f, 10.f, 20.f)),
 	u(glm::vec3(1.f, 0.f, 0.f)),
 	v(glm::vec3(0.f, 1.f, 0.f)),
-	n(glm::vec3(0.f, 0.f, -1.f)),
+	n(glm::vec3(-1.f, -0.25f, -0.25f)),
 	program(shaderProgram),
 	yaw(-90.f),
 	pitch(0),

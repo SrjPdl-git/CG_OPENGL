@@ -18,15 +18,14 @@ class Application
 		const glm::vec2 WINDOW_POSITION;
 		Window window;
 		Shader shader;
-		Mesh mesh;
-		Mesh m1;
+		Mesh floorMesh;
 
 		float deltaTime;
 
 		glm::mat4 model;
 		glm::mat4 projection;
 
-		void createPyramid();
+		void createRawMeshes();
 		void setup();
 		Application();
 	public:

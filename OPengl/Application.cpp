@@ -16,29 +16,15 @@ Application::~Application()
 {
 }
 
-void Application::createPyramid()
+void Application::createRawMeshes()
 {
-    float vertices[] = {
-       //Positions          //Normals          //textureCoordinates
-      -1.f, -1.f,  0.f,     0.f, 0.f, 0.f,     0.f,  0.f,     //0
-       0.f, -1.f,  1.f,     0.f, 0.f, 0.f,     0.5f, 0.f,    //1
-       1.f, -1.f,  0.f,     0.f, 0.f, 0.f,     1.f,  0.f,     //2
-       0.f,  1.f,  0.f,     0.f, 0.f, 0.f,     0.5f, 1.f      //3
-    };
-
-    uint32_t indices[] = {
-        0,3,1,
-        1,3,2,
-        2,3,0,
-        0,1,2
-    };
-
+    
     float floor[] = {
         //Positions          //Normals          //textureCoordinates
-       -10.f, -1.1f, -10.f,     0.f, -1.f, 0.f,     0.f,  0.f,     //0
-       -10.f, -1.1f,  10.f,     0.f, -1.f, 0.f,     0.f,  1.f,    //1
-        10.f, -1.1f, -10.f,     0.f, -1.f, 0.f,     1.f,  0.f,     //2
-        10.f, -1.1f,  10.f,     0.f, -1.f, 0.f,     1.f, 1.f      //3
+       -100.f, -1.1f, -100.f,     0.f, -1.f, 0.f,     0.f,  0.f,     //0
+       -100.f, -1.1f,  100.f,     0.f, -1.f, 0.f,     0.f,  20.f,    //1
+        100.f, -1.1f, -100.f,     0.f, -1.f, 0.f,     20.f,  0.f,     //2
+        100.f, -1.1f,  100.f,     0.f, -1.f, 0.f,     20.f, 20.f      //3
 
     };
 
@@ -49,12 +35,8 @@ void Application::createPyramid()
 
     shader.create("vertexShader.glsl", "fragmentShader.glsl");
 
-    Helper::calculateVertexNormal(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t), 8, 3);
-
-    mesh.create(vertices, sizeof(vertices) / sizeof(float), indices, sizeof(indices) / sizeof(uint32_t),shader.getProgram());
-
     
-    m1.create(floor, sizeof(floor) / sizeof(float), floorIndex, sizeof(floorIndex) / sizeof(uint32_t), shader.getProgram());
+    floorMesh.create(floor, sizeof(floor) / sizeof(float), floorIndex, sizeof(floorIndex) / sizeof(uint32_t), shader.getProgram());
 }
 
 void Application::setup()
@@ -70,6 +52,7 @@ void Application::setup()
     }
     glewExperimental = GL_TRUE;
     glEnable(GL_DEPTH_TEST);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
@@ -78,7 +61,7 @@ void Application::setup()
     //Setting buffer swap interval
     glfwSwapInterval(1);
 
-    createPyramid();
+    createRawMeshes();
 
     model = glm::translate(model, glm::vec3(0.f, 0.f, -3.f));
     model = glm::scale(model, glm::vec3(0.6, 0.6, 0.6));
@@ -87,36 +70,35 @@ void Application::setup()
 
 void Application::update()
 {   
+    /*Pre-update settings*/
     float lastFrameTime = 0.f;
     float currentFrameTime = 0.f;
-
-    float rainbow;
-    float xTrans = 0.005f;
-    float dir = -1.f;
-    float xOffset = -0.5f;
 
     float currAngle = 0.f;
    
     Camera camera(window.getWindow(),shader.getProgram());
     Light light(shader.getProgram());
-    Material dmaterial(shader.getProgram(), 0.1f, 0.3f, 1.f, 64);
-    Material smaterial(shader.getProgram(), 0.1f, 0.6f, 1.f, 256);
+    Material dmaterial(shader.getProgram(), 0.6f, 0.3f, 1.f, 64);
+    Material smaterial(shader.getProgram(), 0.1f, 0.3f, 1.f, 256);
 
-    Texture dText = Texture(shader.getProgram(), "textures/index.png",0);
-    Texture sText = Texture(shader.getProgram(), "textures/index.png", 1);
+
+    Texture dissuseFloorTexture = Texture(shader.getProgram(), "textures/floor.jpg", 0);
+    Texture specularFloorTexture = Texture(shader.getProgram(), "textures/floor.jpg", 1);
    
 
-    Model test;
-    test.load("models/gun/wooden watch tower2.obj", shader.getProgram());
+    Model ship,watchTower;
+    ship.load("models/ship/ship.obj", shader.getProgram());
+    watchTower.load("models/watch tower/wooden watch tower2.obj", shader.getProgram());
 
-
-    glm::mat4 mod = glm::mat4(1.f);
+    /*main loop*/
     while (window.isOpen())
     {
         currentFrameTime = glfwGetTime();
         deltaTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
 
+        float xang = 1 * glm::cos(currentFrameTime);
+        float zang = 1 * glm::sin(currentFrameTime);
         //std::cout << 1 / deltaTime << std::endl;
 
         if (glfwGetKey(window.getWindow(), GLFW_KEY_ESCAPE))
@@ -124,61 +106,49 @@ void Application::update()
             glfwSetWindowShouldClose(window.getWindow(), GL_TRUE);
         }
 
+        //updating projection matrix to account for window resize
         projection = glm::perspective<float>(45.f, window.getViewportAspectRatio(), 1.f, 100.f);
 
-        rainbow = sin(glfwGetTime());
-
-        xOffset = xOffset + (dir * xTrans);
-        if (fabs(xOffset) >= 1)
-        {
-            dir *= -1;
-        }
-
-        
-
-
-        //model = glm::rotate(model, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
-        //model = glm::translate(model, glm::vec3(dir * xTrans, 0.f, 0.f));
 
         /* Poll for and process events */
         glfwPollEvents();
 
 
-
         /* Render here */
-        
-        glClearColor(1.f, 1.f, 1.f, 1.f);
+        glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         //updating camera
         camera.update(deltaTime,&projection);
-
-        //updating material
         
 
         //updating lights
-        light.update(glm::vec3(1.f, 1.f, 1.f), glm::vec3(-1.f, -3.f, 0.f));
+        light.update(glm::vec3(1.f, 1.f, 1.f), glm::vec3(1.f, -1.f, -1.f));
 
-        //Update and render mesh
-        dText.Activate();
-        //sText.Activate();
-        smaterial.update();
-        mesh.update(&model);
-        mesh.render();
-
-        glm::mat4 model1 = glm::mat4(1.f);
-        
-        currAngle = currAngle > 360 ? 0 : 1.f;
-        //model1 = glm::rotate(model1, glm::radians(currAngle), glm::vec3(0.f, 1.f, 0.f));
-        model1 = glm::translate(model1, glm::vec3(0.f, -1.5f, 0.f));
-        
-        test.render(&model1);
+        /*Update and render floor mesh*/
+        //model matrix for floor
+        glm::mat4 floorModel = glm::mat4(1.f);
 
         dmaterial.update();
-        dText.Activate();
-        sText.Activate();
-        m1.update(&mod);
-        m1.render();
+        dissuseFloorTexture.Activate();
+        specularFloorTexture.Activate();
+        floorMesh.update(&floorModel);
+        floorMesh.render();
+        
+        currAngle = currAngle > 360 ? 0 : 1.f;
+
+        //model matrix for ship
+        glm::mat4 shipModel = glm::mat4(1.f);
+        shipModel = glm::scale(shipModel, glm::vec3(0.5f, 0.5f, 0.5f));
+        shipModel = glm::translate(shipModel, glm::vec3(0.f, 4.f, 0.f));
+        
+        ship.render(&shipModel);
+
+        //model matrix for watchTower
+        glm::mat4 watchTowerModel = glm::mat4(1.f);
+        watchTowerModel = glm::translate(watchTowerModel, glm::vec3(0.f, 6.5f, -8.3f));
+        watchTowerModel = glm::scale(watchTowerModel, glm::vec3(0.7f, 1.f, 0.7f));
+        watchTower.render(&watchTowerModel);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window.getWindow());

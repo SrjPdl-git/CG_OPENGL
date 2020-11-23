@@ -7,7 +7,6 @@ in vec2 texCoord;
 in vec3 fragmentCoord;
 
 uniform vec3 cameraPosition;
-//uniform sampler2D texture0;
 
 struct DirectionalLight
 {

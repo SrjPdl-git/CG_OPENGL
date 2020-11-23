@@ -113,7 +113,7 @@ void Model::handleTextMat(const aiScene* scene)
 
 		aiMaterial* material= scene->mMaterials[i];
 
-		//Getting material props
+		//Getting material properties
 		aiColor3D ambientReflectivity;
 		aiColor3D diffuseReflectivity;
 		aiColor3D specularReflectivity;
@@ -125,6 +125,7 @@ void Model::handleTextMat(const aiScene* scene)
 		material->Get(AI_MATKEY_SHININESS, specularShine);
 		Material* nMaterial = new Material(program,ambientReflectivity.r, diffuseReflectivity.r, specularReflectivity.r, specularShine);
 		materials.push_back(nMaterial);
+
 
 		//getting diffuse texture
 		if (material->GetTextureCount(aiTextureType_DIFFUSE))
@@ -152,6 +153,7 @@ void Model::handleTextMat(const aiScene* scene)
 			specularTexture[i] = new Texture(this->program, relativePath.c_str(), 1);
 		}
 		
+		//If missing texture attach default one for both diffuse and specular
 		if(!diffuseTexture[i])
 		{
 			diffuseTexture[i] = new Texture(this->program, "textures/white.png",0);
