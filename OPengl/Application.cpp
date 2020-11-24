@@ -51,7 +51,11 @@ void Application::setup()
         glfwTerminate();
     }
     glewExperimental = GL_TRUE;
+
+    //Z-Buffer setup
     glEnable(GL_DEPTH_TEST);
+    glClearDepth(1.f);
+    glDepthFunc(GL_LESS);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -83,7 +87,7 @@ void Application::update()
 
 
     Texture dissuseFloorTexture = Texture(shader.getProgram(), "textures/floor.jpg", 0);
-    Texture specularFloorTexture = Texture(shader.getProgram(), "textures/floor.jpg", 1);
+    Texture specularFloorTexture = Texture(shader.getProgram(), "textures/floor_specular.jpg", 1);
    
 
     Model ship,watchTower;
@@ -115,7 +119,7 @@ void Application::update()
 
 
         /* Render here */
-        glClearColor(0.f, 0.f, 0.f, 1.f);
+        glClearColor(0.8f, 1.f, 1.f, 0.8f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         //updating camera

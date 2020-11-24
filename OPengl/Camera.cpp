@@ -14,7 +14,7 @@ Camera::Camera(GLFWwindow* window, uint32_t shaderProgram)
 	program(shaderProgram),
 	yaw(-90.f),
 	pitch(0),
-	moveSpeed(10.f),
+	moveSpeed(7.f),
 	mouse(Mouse::getInstance(window)),
 	keyboard(Keyboard::getInstance(window))
 {

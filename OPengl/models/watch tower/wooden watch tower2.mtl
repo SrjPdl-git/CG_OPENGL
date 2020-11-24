@@ -12,4 +12,3 @@ d 1.000000
 illum 1
 map_Kd textures\Wood_Tower_Col.jpg
 map_Ks textures\Wood_Tower_Spec.jpg
-map_Bump  textures\\Wood_Tower_Nor.jpg

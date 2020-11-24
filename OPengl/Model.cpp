@@ -77,7 +77,17 @@ void Model::handleMesh(aiMesh* mesh, const aiScene* scene)
 			vertices.push_back(mesh->mTextureCoords[0][i].x);
 			vertices.push_back(mesh->mTextureCoords[0][i].y);
 		}
+		else
+		{
+			vertices.push_back(0.f);
+			vertices.push_back(0.f);
+		}
 
+	}
+
+	if (!mesh->HasNormals())
+	{
+		Helper::calculateVertexNormal(&vertices[0], vertices.size(), &indices[0], indices.size(), 8, 3);
 	}
 
 	for (uint32_t i = 0; i < mesh->mNumFaces; i++)
@@ -88,10 +98,6 @@ void Model::handleMesh(aiMesh* mesh, const aiScene* scene)
 		
 	}
 
-	if (!mesh->HasNormals())
-	{
-		Helper::calculateVertexNormal(&vertices[0], vertices.size(), &indices[0], indices.size(), 8, 3);
-	}
 
 	Mesh* nMesh = new Mesh;
 	nMesh->create(&vertices[0], vertices.size(), &indices[0], indices.size(), this->program);
